@@ -1,6 +1,3 @@
-#!/usr/bin/python3
-
-
 server_name = "professor-chaos"
 
 

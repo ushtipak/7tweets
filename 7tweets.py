@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 from flask import Flask, request, jsonify
 from storage import Storage
 import json

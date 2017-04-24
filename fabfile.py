@@ -1,21 +1,20 @@
-#!/usr/bin/python3
-
 from fabric.api import local, run, settings, env
 
 env.user = "root"
 
 repository = "ushtipak/7tweets"
-name = "7tweets"
-network = "radionica"
+name = repository.split("/")[1]
 port = 2500
+network = "radionica"
 
-actions = dict(build=f"docker build -t {repository}:TAG .",
-               push=f"docker push {repository}",
-               create_network=f"docker network create {network}",
-               start=f"docker run -d --name {name} --net {network}"
-                     f" -p {port}:{port} {repository}:TAG",
-               stop=f"docker stop {name}; docker rm {name}",
-               status=f"docker ps | grep \"{repository}:TAG\" || echo stopped")
+actions = dict(build="docker build -t {}:TAG .".format(repository),
+               push="docker push {}".format(repository),
+               create_network="docker network create {}".format(network),
+               start="docker run -d --name {} --net {} -p {}:{} {}:TAG".
+                     format(name, network, port, port, repository),
+               stop="docker stop {}; docker rm {}".format(name, name),
+               status="docker ps | grep \"{}:TAG\" || echo stopped".
+                      format(repository))
 
 
 def build(tag="latest"):
