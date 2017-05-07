@@ -29,11 +29,11 @@ print("> get tweet #{}:\n{}".format(tweet_id, r.text))
 
 tweet_id = 1
 r = requests.delete("{}/{}".format(url, tweet_id))
-print("> delete tweet #{}: {}".format(tweet_id, r.json()))
+print("> delete tweet #{}: {}".format(tweet_id, r.text))
 
 tweet_id = 4
 r = requests.delete("{}/{}".format(url, tweet_id))
-print("> delete tweet #{}: {}".format(tweet_id, r.json()))
+print("> delete tweet #{}: {}".format(tweet_id, r.text))
 
 r = requests.get(url)
 print("> get all tweets:\n{}".format(r.text))

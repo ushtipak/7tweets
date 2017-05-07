@@ -1,41 +1,62 @@
-server_name = "professor-chaos"
+import functools
+import pg8000
+import config
 
 
-class Storage(object):
-    _tweets = []
-    _tweet_count = 0
+def uses_db(fn):
+    @functools.wraps(fn)
+    def wrapper(cls, *args, **kwargs):
+        cursor = cls._connection.cursor()
+        query = fn(cls, cursor, *args, **kwargs)
+        cursor.close()
+        cls._connection.commit()
+        return query
+    return wrapper
+
+
+class Storage:
+    _connection = pg8000.connect(**config.DB_CONFIG)
 
     @classmethod
-    def get_tweets(cls):
+    @uses_db
+    def get_tweets(cls, cursor):
         """Return all tweets."""
-        # TODO: Should method return 204 No Content if there are no tweets?
-        return cls._tweets
+        cursor.execute(
+            """
+            SELECT id, name, tweet FROM tweets
+            """)
+        return cursor.fetchall()
 
     @classmethod
-    def post_tweet(cls, body):
-        """Create tweet based on given body, store it and increment count."""
-        cls._tweet_count += 1
-        tweet = {"id": cls._tweet_count,
-                 "name": server_name,
-                 "tweet": body}
-        cls._tweets.append(tweet)
-        return "added!"
+    @uses_db
+    def post_tweet(cls, cursor, tweet_body):
+        """Store tweet (based on given body and 'server name') in DB."""
+        cursor.execute(
+            """
+            INSERT INTO tweets (name, tweet)
+            VALUES ( %s, %s ) RETURNING id, name, tweet
+            """, (config.app_server, tweet_body)
+        )
+        return cursor.fetchone()
 
     @classmethod
-    def get_tweet(cls, tweet_id):
+    @uses_db
+    def get_tweet(cls, cursor, tweet_id):
         """Return tweet (if exists) with given ID."""
-        return [tweet for tweet in cls._tweets if tweet["id"] == tweet_id] or \
-               "no tweet #{}".format(tweet_id)
+        cursor.execute(
+            """
+            SELECT * FROM tweets WHERE id = %s
+            """, (tweet_id, )
+        )
+        return cursor.fetchone()
 
     @classmethod
-    def delete_tweet(cls, tweet_id):
-        """Delete tweet (if exists) with given ID."""
-        try:
-            # check if tweet with given id exists
-            # if so - remove it from tweet list based on it's index
-            del cls._tweets[([cls._tweets.index(tweet) for tweet
-                              in cls._tweets if tweet["id"] == tweet_id][0])]
-            return "deleted!"
-        except IndexError:
-            # if it doesn't exist - return adequate message
-            return "no tweet #{}".format(tweet_id)
+    @uses_db
+    def delete_tweet(cls, cursor, tweet_id):
+        """Store tweet (based on given body and 'server name') in DB."""
+        cursor.execute(
+            """
+            DELETE FROM tweets WHERE id = %s RETURNING id, name, tweet
+            """, (tweet_id, )
+        )
+        return cursor.fetchone()

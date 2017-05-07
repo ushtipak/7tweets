@@ -1,33 +1,45 @@
 from flask import Flask, request, jsonify
 from storage import Storage
 import json
-
+import db
 
 app = Flask(__name__)
+
+
+@app.before_first_request
+def initialize_database():
+    """Make sure DB has tweets table."""
+    db.initialize()
 
 
 @app.route("/tweets")
 def get_tweets():
     """Display all tweets."""
-    return jsonify(Storage.get_tweets())
+    tweets = Storage.get_tweets()
+    return jsonify(tweets) if tweets else ("There are no tweets :(", 404)
 
 
 @app.route("/tweets", methods=['POST'])
 def post_tweet():
     """Store tweet (from provided JSON tweet body)."""
-    return jsonify(Storage.post_tweet(json.loads(request.get_json())["tweet"]))
+    tweet_body = json.loads(request.get_json())["tweet"]
+    return jsonify(Storage.post_tweet(tweet_body))
 
 
 @app.route("/tweets/<int:tweet_id>")
 def get_tweet(tweet_id):
     """Display tweet (if exists) with given ID."""
-    return jsonify(Storage.get_tweet(tweet_id))
+    tweet = Storage.get_tweet(tweet_id)
+    return jsonify(tweet) if tweet else ("There is no tweet with id {}".
+                                         format(tweet_id), 404)
 
 
 @app.route("/tweets/<int:tweet_id>", methods=['DELETE'])
 def delete_tweet(tweet_id):
     """Delete tweet (if exists) with given ID."""
-    return jsonify(Storage.delete_tweet(tweet_id))
+    deleted = Storage.delete_tweet(tweet_id)
+    return jsonify(deleted) if deleted else ("There is no tweet with id {}".
+                                             format(tweet_id), 404)
 
 
 if __name__ == "__main__":
