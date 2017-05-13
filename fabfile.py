@@ -10,6 +10,8 @@ actions = dict(build="docker build -t {}:TAG ."
                     .format(config.docker_repository),
                create_network="docker network create {}".
                               format(config.docker_network),
+               pull="docker pull {}"
+                    .format(config.docker_repository),
                start="docker run -d --name {} --net {} -p {}:{} {}:TAG".
                      format(*config.DOCKER_APP_CONFIG),
                stop="docker stop {}; docker rm {}".
@@ -37,6 +39,10 @@ def push(tag="latest"):
 def create_network():
     with settings(warn_only=True):
         local(actions["create_network"])
+
+
+def pull(tag="latest"):
+    local(actions["pull"].replace("TAG", tag))
 
 
 def start(tag="latest"):
@@ -91,4 +97,5 @@ def deploy(tag="latest"):
     with settings(warn_only=True):
         run(actions["stop"])
         run(actions["create_network"])
+    run(actions["pull"].replace("TAG", tag))
     run(actions["start"].replace("TAG", tag))

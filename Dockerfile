@@ -7,5 +7,5 @@ COPY requirements.txt /opt/7tweets/
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY 7tweets.py storage.py /opt/7tweets/
-CMD ["python", "7tweets.py"]
+COPY seven_tweets.py storage.py config.py db.py /opt/7tweets/
+CMD ["python", "seven_tweets.py"]

@@ -12,7 +12,7 @@ db_name = "tweets"
 db_pass = "st_pass"
 
 DB_CONFIG = dict(user=db_user,
-                 host="localhost",
+                 host=db_host,
                  port=db_port,
                  password=db_pass)
 DOCKER_DB_CONFIG = [db_host,
