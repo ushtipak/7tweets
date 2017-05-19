@@ -29,4 +29,5 @@ DOCKER_APP_CONFIG = [app_name,
                      docker_network,
                      app_port,
                      app_port,
+                     auth_token,
                      docker_repository]
