@@ -18,6 +18,7 @@ http_exceptions = {
 
 
 def handles_exceptions(fn):
+    """Handle most common HTTP errors and return 500 for remaining ones."""
     @functools.wraps(fn)
     def wrapper(*args, **kwargs):
         try:

@@ -1,19 +1,28 @@
 import requests
+import config
 import json
 
+
 url = "http://localhost:2500/tweets"
+auth = {'X-Auth-Token': config.auth_token}
+
 
 r = requests.get(url)
 print("> get all tweets:\n{}".format(r.text))
 
-r = requests.post(url, json=json.dumps({"tweet": "one tweet, such wow"}))
+r = requests.post(url,
+                  json=json.dumps({"tweet": "one tweet, such wow"}),
+                  headers=auth)
 print("> post tweet: {}".format(r.json()))
 
 r = requests.post(url,
-                  json=json.dumps({"tweet": "second tweet, much much wow"}))
+                  json=json.dumps({"tweet": "second tweet, much much wow"}),
+                  headers=auth)
 print("> post tweet: {}".format(r.json()))
 
-r = requests.post(url, json=json.dumps({"tweet": "omg it's tweet 3, awesome"}))
+r = requests.post(url,
+                  json=json.dumps({"tweet": "omg it's tweet 3, awesome"}),
+                  headers=auth)
 print("> post tweet: {}".format(r.json()))
 
 r = requests.get(url)
@@ -28,11 +37,13 @@ r = requests.get("{}/{}".format(url, tweet_id))
 print("> get tweet #{}:\n{}".format(tweet_id, r.text))
 
 tweet_id = 1
-r = requests.delete("{}/{}".format(url, tweet_id))
+r = requests.delete("{}/{}".format(url, tweet_id),
+                    headers=auth)
 print("> delete tweet #{}: {}".format(tweet_id, r.text))
 
 tweet_id = 4
-r = requests.delete("{}/{}".format(url, tweet_id))
+r = requests.delete("{}/{}".format(url, tweet_id),
+                    headers=auth)
 print("> delete tweet #{}: {}".format(tweet_id, r.text))
 
 r = requests.get(url)
