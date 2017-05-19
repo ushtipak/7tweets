@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from storage import Storage
+from exceptions import handles_exceptions
 import json
 import db
 
@@ -13,6 +14,7 @@ def initialize_database():
 
 
 @app.route("/tweets")
+@handles_exceptions
 def get_tweets():
     """Display all tweets."""
     tweets = Storage.get_tweets()
@@ -20,6 +22,7 @@ def get_tweets():
 
 
 @app.route("/tweets", methods=['POST'])
+@handles_exceptions
 def post_tweet():
     """Store tweet (from provided JSON tweet body)."""
     tweet_body = json.loads(request.get_json())["tweet"]
@@ -27,6 +30,7 @@ def post_tweet():
 
 
 @app.route("/tweets/<int:tweet_id>")
+@handles_exceptions
 def get_tweet(tweet_id):
     """Display tweet (if exists) with given ID."""
     tweet = Storage.get_tweet(tweet_id)
@@ -35,6 +39,7 @@ def get_tweet(tweet_id):
 
 
 @app.route("/tweets/<int:tweet_id>", methods=['DELETE'])
+@handles_exceptions
 def delete_tweet(tweet_id):
     """Delete tweet (if exists) with given ID."""
     deleted = Storage.delete_tweet(tweet_id)
