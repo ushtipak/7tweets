@@ -40,6 +40,17 @@ def get_tweet(tweet_id):
                                          format(tweet_id), 404)
 
 
+@app.route("/tweets/<int:tweet_id>", methods=['PUT'])
+@handles_exceptions
+@requires_auth
+def update_tweet(tweet_id):
+    """Update tweet (if exists) with given ID and new tweet body."""
+    tweet_body = json.loads(request.get_json())["tweet"]
+    updated = Storage.update_tweet(tweet_body, tweet_id)
+    return jsonify(updated) if updated else ("There is no tweet with id {}".
+                                             format(tweet_id), 404)
+
+
 @app.route("/tweets/<int:tweet_id>", methods=['DELETE'])
 @handles_exceptions
 @requires_auth

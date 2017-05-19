@@ -2,10 +2,8 @@ import requests
 import config
 import json
 
-
 url = "http://localhost:2500/tweets"
 auth = {'X-Auth-Token': config.auth_token}
-
 
 r = requests.get(url)
 print("> get all tweets:\n{}".format(r.text))
@@ -37,13 +35,17 @@ r = requests.get("{}/{}".format(url, tweet_id))
 print("> get tweet #{}:\n{}".format(tweet_id, r.text))
 
 tweet_id = 1
-r = requests.delete("{}/{}".format(url, tweet_id),
-                    headers=auth)
+r = requests.delete("{}/{}".format(url, tweet_id), headers=auth)
 print("> delete tweet #{}: {}".format(tweet_id, r.text))
 
+tweet_id = 2
+r = requests.put("{}/{}".format(url, tweet_id),
+                 json=json.dumps({"tweet": "such a nice update, many wow"}),
+                 headers=auth)
+print("> update tweet: {}".format(r.json()))
+
 tweet_id = 4
-r = requests.delete("{}/{}".format(url, tweet_id),
-                    headers=auth)
+r = requests.delete("{}/{}".format(url, tweet_id))
 print("> delete tweet #{}: {}".format(tweet_id, r.text))
 
 r = requests.get(url)

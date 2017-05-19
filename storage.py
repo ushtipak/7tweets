@@ -52,6 +52,18 @@ class Storage:
 
     @classmethod
     @uses_db
+    def update_tweet(cls, cursor, tweet_body, tweet_id):
+        """Update tweet in DB based on 'server name', tweet ID and new body."""
+        cursor.execute(
+            """
+            UPDATE tweets SET tweet = %s
+            WHERE id = %s AND name = %s RETURNING id, name, tweet
+            """, (tweet_body, tweet_id, config.app_server)
+        )
+        return cursor.fetchone()
+
+    @classmethod
+    @uses_db
     def delete_tweet(cls, cursor, tweet_id):
         """Store tweet (based on given body and 'server name') in DB."""
         cursor.execute(
