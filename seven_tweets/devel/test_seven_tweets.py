@@ -1,8 +1,10 @@
 from unittest.mock import MagicMock, patch
-import config
+from seven_tweets import config
+from seven_tweets.app import app
+import json
 with patch('pg8000.connect', new=MagicMock()):
-    from seven_tweets import *
-    from storage import Storage
+    from seven_tweets.storage import Storage
+
 
 test_client = app.test_client()
 

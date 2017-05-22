@@ -1,6 +1,7 @@
+from seven_tweets import config
 import requests
-import config
 import json
+
 
 url = "http://localhost:2500/tweets"
 auth = {'X-Auth-Token': config.auth_token}

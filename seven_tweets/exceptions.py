@@ -1,6 +1,6 @@
+from flask import jsonify
 import functools
 import traceback
-from flask import jsonify
 
 
 http_exceptions = {

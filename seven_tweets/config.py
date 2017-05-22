@@ -1,5 +1,6 @@
 import os
 
+
 auth_token = os.getenv("ST_AUTH", "st_auth")
 db_host = os.getenv("ST_DB", "st_db")
 db_user = os.getenv("ST_USER", "st_user")

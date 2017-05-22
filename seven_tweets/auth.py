@@ -1,7 +1,7 @@
 from flask import request, Response
+from seven_tweets import config
 import functools
 import secrets
-import config
 
 
 AUTH_TOKEN_NAME = 'X-Auth-Token'

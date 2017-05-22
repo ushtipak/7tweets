@@ -1,6 +1,6 @@
+from seven_tweets import config
 import functools
 import pg8000
-import config
 
 
 def uses_db(fn):

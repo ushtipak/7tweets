@@ -1,8 +1,9 @@
+from seven_tweets.auth import is_authorized as requires_auth
+from seven_tweets.exceptions import handles_exceptions
 from flask import Flask, request, jsonify
-from auth import is_authorized as requires_auth
-from exceptions import handles_exceptions
-from storage import Storage
+from seven_tweets.storage import Storage
 import json
+
 
 app = Flask(__name__)
 
@@ -22,7 +23,7 @@ def get_tweets():
 
 
 @app.route("/tweets", methods=['POST'])
-# @handles_exceptions
+@handles_exceptions
 @requires_auth
 def post_tweet():
     """Store tweet (from provided JSON tweet body)."""

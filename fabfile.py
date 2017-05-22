@@ -1,33 +1,34 @@
 from fabric.api import local, run, settings, env
-import config
+
+from seven_tweets import config
 
 env.user = "root"
 
 
 # actions that are identical remotely and locally are extracted here :)
 actions = dict(build="docker build -t {}:TAG ."
-                     .format(config.docker_repository),
+               .format(config.docker_repository),
                push="docker push {}"
-                    .format(config.docker_repository),
+               .format(config.docker_repository),
                create_network="docker network create {}".
-                              format(config.docker_network),
+               format(config.docker_network),
                pull="docker pull {}"
-                    .format(config.docker_repository),
+               .format(config.docker_repository),
                start="docker run -d --name {} --net {} -p {}:{} "
                      "-e ST_AUTH={} {}:TAG".
-                     format(*config.DOCKER_APP_CONFIG),
+               format(*config.DOCKER_APP_CONFIG),
                stop="docker stop {}; docker rm {}".
-                     format(config.app_name, config.app_name),
+               format(config.app_name, config.app_name),
                status="docker ps | grep \"{}:TAG\" || echo stopped".
-                      format(config.docker_repository),
+               format(config.docker_repository),
                initialize_db="docker run -d --name {} --net {} "
                              "--restart unless-stopped -e POSTGRES_USER={} "
                              "-e POSTGRES_PASSWORD={} "
                              "-v {}:/var/lib/postgresql/data "
                              "-p 0.0.0.0:{}:{} postgres:{}".
-                             format(*config.DOCKER_DB_CONFIG),
+               format(*config.DOCKER_DB_CONFIG),
                destroy_db="docker stop {}; docker rm {}".
-                          format(config.db_host, config.db_host))
+               format(config.db_host, config.db_host))
 
 
 def build(tag="latest"):
