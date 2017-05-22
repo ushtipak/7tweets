@@ -3,7 +3,6 @@ from auth import is_authorized as requires_auth
 from exceptions import handles_exceptions
 from storage import Storage
 import json
-import db
 
 app = Flask(__name__)
 
@@ -11,7 +10,7 @@ app = Flask(__name__)
 @app.before_first_request
 def initialize_database():
     """Make sure DB has tweets table."""
-    db.initialize()
+    Storage.initialize()
 
 
 @app.route("/tweets")
@@ -23,7 +22,7 @@ def get_tweets():
 
 
 @app.route("/tweets", methods=['POST'])
-@handles_exceptions
+# @handles_exceptions
 @requires_auth
 def post_tweet():
     """Store tweet (from provided JSON tweet body)."""

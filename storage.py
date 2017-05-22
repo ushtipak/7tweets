@@ -19,6 +19,16 @@ class Storage:
 
     @classmethod
     @uses_db
+    def initialize(cls, cursor):
+        """Creates initial tweets table if missing."""
+        cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS tweets
+            (id SERIAL PRIMARY KEY, name VARCHAR(20) NOT NULL, tweet TEXT);
+            """)
+
+    @classmethod
+    @uses_db
     def get_tweets(cls, cursor):
         """Return all tweets."""
         cursor.execute(
