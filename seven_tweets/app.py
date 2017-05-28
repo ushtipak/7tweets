@@ -2,6 +2,7 @@ from seven_tweets.auth import is_authorized as requires_auth
 from seven_tweets.exceptions import handles_exceptions
 from flask import Flask, request, jsonify
 from seven_tweets.storage import Storage
+from datetime import datetime
 import json
 
 
@@ -59,6 +60,14 @@ def delete_tweet(tweet_id):
     deleted = Storage.delete_tweet(tweet_id)
     return jsonify(deleted) if deleted else ("There is no tweet with id {}".
                                              format(tweet_id), 404)
+
+
+@app.route("/search", methods=['GET'])
+@handles_exceptions
+def search_tweets():
+    """Performs tweet search in local DB and optionally on remote nodes."""
+    tweets = Storage.search_tweets(**json.loads(request.get_json()))
+    return jsonify(tweets) if tweets else ("There are no tweets :(", 404)
 
 
 if __name__ == "__main__":

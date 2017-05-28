@@ -51,3 +51,11 @@ print("> delete tweet #{}: {}".format(tweet_id, r.text))
 
 r = requests.get(url)
 print("> get all tweets:\n{}".format(r.text))
+
+
+r = requests.get(url.replace("tweets", "search"),
+                 json=json.dumps({"content": "wow",
+                                  "created_from": "2016-05-20",
+                                  "all": True}))
+print("> search tweets: {}".format(r.text))
+

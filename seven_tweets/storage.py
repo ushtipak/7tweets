@@ -24,7 +24,8 @@ class Storage:
         cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS tweets
-            (id SERIAL PRIMARY KEY, name VARCHAR(20) NOT NULL, tweet TEXT);
+            (id SERIAL PRIMARY KEY, name VARCHAR(20) NOT NULL,
+            tweet TEXT, date TIMESTAMP);
             """)
 
     @classmethod
@@ -43,8 +44,8 @@ class Storage:
         """Store tweet (based on given body and 'server name') in DB."""
         cursor.execute(
             """
-            INSERT INTO tweets (name, tweet)
-            VALUES ( %s, %s ) RETURNING id, name, tweet
+            INSERT INTO tweets (name, tweet, date)
+            VALUES ( %s, %s, NOW() ) RETURNING id, name, tweet
             """, (config.app_server, tweet_body)
         )
         return cursor.fetchone()
@@ -82,3 +83,17 @@ class Storage:
             """, (tweet_id, )
         )
         return cursor.fetchone()
+
+    @classmethod
+    @uses_db
+    def search_tweets(cls, cursor, content,
+                      created_from=None, created_to=None, all=False):
+        """Return all tweets that fit given criteria."""
+        query = "SELECT * FROM tweets WHERE tweet LIKE '%%{}%%'".format(
+            content)
+        if created_from:
+            query += " AND date > '{}'".format(created_from)
+        if created_to:
+            query += " AND date < '{}'".format(created_to)
+        cursor.execute(query)
+        return cursor.fetchall()
